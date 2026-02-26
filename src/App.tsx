@@ -10,6 +10,7 @@ import Timetable from "./pages/Timetable";
 import AddTeacher from "./pages/AddTeacher";
 import AddStudent from "./pages/AddStudent";
 import PlaceholderPage from "./pages/PlaceholderPage";
+import SettingsPage from "./pages/SettingsPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,7 +32,7 @@ const App = () => (
             <Route path="/camera-attendance" element={<CameraAttendance />} />
             <Route path="/exam-monitoring" element={<PlaceholderPage title="Exam Monitoring" />} />
             <Route path="/reports" element={<PlaceholderPage title="Reports" />} />
-            <Route path="/settings" element={<PlaceholderPage title="Settings" />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </DashboardLayout>
