@@ -1,4 +1,4 @@
-import { Bell, ChevronDown, LogOut } from "lucide-react";
+import { Bell, LogOut } from "lucide-react";
 
 const Navbar = () => {
   return (
@@ -13,18 +13,11 @@ const Navbar = () => {
         </span>
       </div>
 
-      {/* Center */}
-      <div className="hidden md:flex items-center gap-2 bg-nav-foreground/10 rounded-lg px-4 py-2 text-sm">
-        <span>Session:</span>
-        <span className="font-medium">Jan–Jun 2026</span>
-        <ChevronDown size={16} />
-      </div>
-
       {/* Right */}
       <div className="flex items-center gap-4">
         <button className="relative p-2 rounded-lg hover:bg-nav-foreground/10 transition-colors">
           <Bell size={20} />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+          <span className="absolute top-1 right-1 w-2 h-2 bg-warning rounded-full" />
         </button>
 
         <div className="flex items-center gap-3">
