@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { GraduationCap, Upload } from "lucide-react";
+import axios from "axios";
 
 const AddStudent = () => {
   const [form, setForm] = useState({
@@ -10,14 +11,48 @@ const AddStudent = () => {
     email: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const [image, setImage] = useState<File | null>(null);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Student added successfully! (UI only)");
-    setForm({ name: "", roll: "", branch: "", batch: "", email: "" });
+
+    if (!image) {
+      alert("Please upload student photo");
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append("name", form.name);
+    formData.append("roll", form.roll);
+    formData.append("branch", form.branch);
+    formData.append("batch", form.batch);
+    formData.append("email", form.email);
+    formData.append("image", image);
+
+    try {
+      await axios.post("http://localhost:8000/add-student", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      alert("Student added successfully!");
+      setForm({ name: "", roll: "", branch: "", batch: "", email: "" });
+      setImage(null);
+    } catch (error) {
+      console.error(error);
+      alert("Error adding student");
+    }
   };
 
   return (
@@ -29,14 +64,16 @@ const AddStudent = () => {
 
       <form onSubmit={handleSubmit} className="bg-card rounded-xl shadow-md p-8 space-y-5">
         {[
-          { label: "Full Name", name: "name", type: "text", placeholder: "Aditya Patil" },
-          { label: "Roll Number", name: "roll", type: "text", placeholder: "CU2026001" },
-          { label: "Branch", name: "branch", type: "text", placeholder: "Computer Science" },
-          { label: "Batch", name: "batch", type: "text", placeholder: "2023-2027" },
-          { label: "Email Address", name: "email", type: "email", placeholder: "aditya@cu.edu" },
+          { label: "Full Name", name: "name", type: "text", placeholder: "Enter student name" },
+          { label: "Roll Number", name: "roll", type: "text", placeholder: "Enter student rollno" },
+          { label: "Branch", name: "branch", type: "text", placeholder: "Enter branch" },
+          { label: "Batch", name: "batch", type: "text", placeholder: "Enter academic year" },
+          { label: "Email Address", name: "email", type: "email", placeholder: "Enter student email adress" },
         ].map((field) => (
           <div key={field.name} className="space-y-1.5">
-            <label className="block text-sm font-medium text-foreground">{field.label}</label>
+            <label className="block text-sm font-medium text-foreground">
+              {field.label}
+            </label>
             <input
               type={field.type}
               name={field.name}
@@ -51,11 +88,21 @@ const AddStudent = () => {
 
         {/* Photo Upload */}
         <div className="space-y-1.5">
-          <label className="block text-sm font-medium text-foreground">Upload Photo</label>
+          <label className="block text-sm font-medium text-foreground">
+            Upload Photo
+          </label>
+
           <label className="flex items-center justify-center gap-2 w-full px-4 py-6 rounded-lg border-2 border-dashed border-border bg-muted/30 text-muted-foreground cursor-pointer hover:bg-muted/50 transition-colors">
             <Upload size={20} />
-            <span className="text-sm">Click to upload student photo</span>
-            <input type="file" accept="image/*" className="hidden" />
+            <span className="text-sm">
+              {image ? image.name : "Click to upload student photo"}
+            </span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="hidden"
+            />
           </label>
         </div>
 
